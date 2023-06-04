@@ -20,6 +20,27 @@ qsort2(x:xs) = qsort2 smaller ++ [x] ++ qsort2 larger
                     smaller = [a | a <- xs, a < x]
                     larger = [a | a <- xs, a > x]
 
+--2.4
+last1 [] = 0
+last1 (x) = head(reverse x)
+
+last2 [] = 0
+last2 [x] = x
+last2 (x:xs) = last2 xs  
+
+last3 [] = 0
+last3 (x) = x !! ((length (x)) - 1)
+
+--2.5
+init1 [] = []
+init1 (x) = reverse(tail(reverse x))
+
+init2 [] = []
+init2 (x) = take (length x - 1) x
+
+init3 [] = []
+init3 (x) = reverse (drop 1 (reverse x))
+
 main = do
     --putStrLn "Hello, everybody!"
     --putStrLn $ show (take 10 (filter even [1..]))
@@ -67,4 +88,13 @@ main = do
 
     putStrLn $ show (qsort2[2,2,3,1,1]) 
     
-    --test line
+    --2.4
+    putStrLn $ show(last1[1,2,3,4,5])
+    putStrLn $ show(last2[1,2,3,4,5,6])
+    putStrLn $ show(last3[1,2,3,4])
+
+    --2.5
+    putStrLn $ show(init1[1,2,3,4,5,6,7])
+    putStrLn $ show(init2[1,2,3,4,5,6,7])
+    putStrLn $ show(init3[1,2,3,4,5,6,7])
+

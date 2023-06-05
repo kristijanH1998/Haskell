@@ -98,10 +98,9 @@ main = do
     putStrLn $ show(init2[1,2,3,4,5,6,7])
     putStrLn $ show(init3[1,2,3,4,5,6,7])
 
-    {- 3.1: 1) list of three chars
-            2) 3-tuple (triple) of chars
-            3) list of two tuples, each containing mixed values (bool and int)
-            4) tuple of two lists, first containing bool values and the second ints
-            5) list of functions
+    {- 3.1: 1) list of three chars; [char]
+            2) 3-tuple (triple) of chars; (char, char, char)
+            3) list of two tuples, each containing mixed values (bool and char); [(bool,char)]
+            4) tuple of two lists, first containing bool values and the second chars; ([bool],[char])
+            5) list of functions; [[el] -> [el]]
             -}
-            

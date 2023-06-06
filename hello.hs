@@ -117,6 +117,11 @@ main = do
             4) double :: Num a => a -> a
             5) palindrome :: Eq x => [x] -> Bool
             6) twice :: (x -> x) -> x -> x
+
+    -3.5: Function types should not be instances of Eq class because two functions of the same type can sometimes return different
+    results for equal arguments. An example of such a function would be two random functions with slightly different random number
+    generation algorithms, which when passed the same upper bound argument return different results. Such functions would be of the
+    same type but not always equal, making the property of functions of being instances of Eq class ambiguous. 
     -}
 
     putStrLn $ show (copy 2)

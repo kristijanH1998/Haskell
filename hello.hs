@@ -100,23 +100,22 @@ main = do
     putStrLn $ show(init3[1,2,3,4,5,6,7])
 
     {- 3.1: 1) list of three chars; [char]
-            2) 3-tuple (triple) of chars; (char, char, char)
-            3) list of two tuples, each containing mixed values (bool and char); [(Bool,char)]
-            4) tuple of two lists, first containing bool values and the second chars; ([Bool],[char])
+            2) 3-tuple (triple) of chars; (Char, Char, Char)
+            3) list of two tuples, each containing mixed values (bool and char); [(Bool,Char)]
+            4) tuple of two lists, first containing bool values and the second chars; ([Bool],[Char])
             5) list of functions; [[el] -> [el]]
             
-     - 3.2: 1) let bools = [false, true]
+     - 3.2: 1) let bools = [False, True]
             2) let nums = [[1,2,3], [2,5,7], [3,4,5]]
             3) add x y z = x + y + z
             4) copy a = (a,a)
-            5) apply f a = f + a
-               f a = b
+            5) apply f x = f x
 
      - 3.3: 1) second :: [a] -> a
             2) swap :: (a,b) -> (b,a)
             3) pair :: x -> y -> (x,y)
-            4) double :: Num -> Num
-            5) palindrome :: [x] -> Bool
+            4) double :: Num a => a -> a
+            5) palindrome :: Eq x => [x] -> Bool
             6) twice :: (x -> x) -> x -> x
     -}
 

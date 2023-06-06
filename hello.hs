@@ -1,6 +1,7 @@
 import Prelude hiding (product)
 double x = x + x
 triple x = 3 * x
+copy a = (a,a)
 
 --1.3
 product [] = 1
@@ -100,7 +101,23 @@ main = do
 
     {- 3.1: 1) list of three chars; [char]
             2) 3-tuple (triple) of chars; (char, char, char)
-            3) list of two tuples, each containing mixed values (bool and char); [(bool,char)]
-            4) tuple of two lists, first containing bool values and the second chars; ([bool],[char])
+            3) list of two tuples, each containing mixed values (bool and char); [(Bool,char)]
+            4) tuple of two lists, first containing bool values and the second chars; ([Bool],[char])
             5) list of functions; [[el] -> [el]]
-            -}
+            
+     - 3.2: 1) let bools = [false, true]
+            2) let nums = [[1,2,3], [2,5,7], [3,4,5]]
+            3) add x y z = x + y + z
+            4) copy a = (a,a)
+            5) apply f a = f + a
+               f a = b
+
+     - 3.3: 1) second :: [a] -> a
+            2) swap :: (a,b) -> (b,a)
+            3) pair :: x -> y -> (x,y)
+            4) double :: Num -> Num
+            5) palindrome :: [x] -> Bool
+            6) twice :: (x -> x) -> x -> x
+    -}
+
+    putStrLn $ show (copy 2)

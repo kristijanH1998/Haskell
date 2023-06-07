@@ -50,11 +50,16 @@ option4:
 b || c | b == c    = b
        | otherwise = True
 -}
---4.5
+--4.5 
+{-
 (&&) :: Bool -> Bool -> Bool
 (&&) a b = if a then
               if b then True else False
            else False
+-}
+--4.6
+(&&) :: Bool -> Bool -> Bool
+(&&) a b = if a then b else False
 
 main = do
     putStrLn $ show (halve[2,4..8])
@@ -68,4 +73,4 @@ main = do
     putStrLn $ show (safetail2([] :: [Int]))
     putStrLn $ show (safetail3([1,2,3,4,5] :: [Int]))
     putStrLn $ show ((||) False False)
-    putStrLn $ show ((&&) True True)
+    putStrLn $ show ((&&) False True)

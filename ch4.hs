@@ -33,11 +33,23 @@ safetail3 (xs)  = tail xs
 
 --4.4
 (||) :: Bool -> Bool -> Bool
+--option1:
 True || True    = True
 True || False   = True
 False || True   = True
 False || False  = False
+{- option2: 
+False||False= False
+_ || _   = True
 
+option3:
+True || _   = True
+False||b = b
+
+option4:
+b || c | b == c    = b
+       | otherwise = True
+-}
 main = do
     putStrLn $ show (halve[2,4..8])
     putStrLn $ show (third1[1,2,3,4,5])

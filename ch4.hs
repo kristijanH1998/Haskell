@@ -66,7 +66,8 @@ mult = \x -> (\y -> (\z -> x * y * z))
 --4.8
 luhnDouble :: Int -> Int
 luhnDouble x = if (2*x > 9) then (2*x - 9) else (2 * x)
-
+luhn :: Int -> Int -> Int -> Int -> Bool 
+luhn a b c d = if (sum [luhnDouble a, b, luhnDouble c, d]) `mod` 10 == 0 then True else False
 
 main = do
     putStrLn $ show (halve[2,4..8])
@@ -83,3 +84,4 @@ main = do
     putStrLn $ show ((&&) False True)
     putStrLn $ show (mult 1 3 5)
     putStrLn $ show (luhnDouble 5)
+    putStrLn $ show (luhn 2 3 4 9)

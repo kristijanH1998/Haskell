@@ -63,6 +63,10 @@ b || c | b == c    = b
 --4.7
 mult :: Int -> (Int -> (Int -> Int))
 mult = \x -> (\y -> (\z -> x * y * z))
+--4.8
+luhnDouble :: Int -> Int
+luhnDouble x = if (2*x > 9) then (2*x - 9) else (2 * x)
+
 
 main = do
     putStrLn $ show (halve[2,4..8])
@@ -78,3 +82,4 @@ main = do
     putStrLn $ show ((||) False False)
     putStrLn $ show ((&&) False True)
     putStrLn $ show (mult 1 3 5)
+    putStrLn $ show (luhnDouble 5)

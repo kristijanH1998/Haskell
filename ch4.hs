@@ -60,6 +60,9 @@ b || c | b == c    = b
 --4.6
 (&&) :: Bool -> Bool -> Bool
 (&&) a b = if a then b else False
+--4.7
+mult :: Int -> (Int -> (Int -> Int))
+mult = \x -> (\y -> (\z -> x * y * z))
 
 main = do
     putStrLn $ show (halve[2,4..8])
@@ -74,3 +77,4 @@ main = do
     putStrLn $ show (safetail3([1,2,3,4,5] :: [Int]))
     putStrLn $ show ((||) False False)
     putStrLn $ show ((&&) False True)
+    putStrLn $ show (mult 1 3 5)

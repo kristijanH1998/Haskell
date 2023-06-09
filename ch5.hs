@@ -11,6 +11,11 @@ replicate a b = [b | _ <- [1..a]]
 --5.5
 pyths :: Int -> [(Int,Int,Int)]
 pyths x = [(a,b,c) | a <- [1..x], b <- [1..x], c <-[1..x], (a^2) + (b^2) == (c^2)]
+--5.6
+factors :: Int -> [Int]
+factors n = [x | x <- [1..n], n `mod` x == 0]
+perfects :: Int -> [Int]
+perfects x = [n | n <- [1..x], n == sum(tail(reverse(factors n)))]
 
 main = do
     --5.1
@@ -19,4 +24,5 @@ main = do
     print $ grid 1 2
     print $ square 2
     print $ replicate 3 True
-    print $ pyths 10
+    print $ pyths 50
+    print $ perfects 10000

@@ -24,5 +24,9 @@ main = do
     print $ grid 1 2
     print $ square 2
     print $ replicate 3 True
-    print $ pyths 50
-    print $ perfects 10000
+    --print $ pyths 50
+    --print $ perfects 10000
+    --5.7
+    print $ [(x,y) | x <- [1,2], y <- [3,4]]
+    print $ concat [[(1,y) | y <- [3,4]], [(2,z) | z <- [3,4]]]
+    print $ concat [[(x,y) | y <- [3,4]] | x <- [1,2]]

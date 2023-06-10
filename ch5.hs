@@ -1,4 +1,5 @@
 import Prelude hiding (replicate)
+import Data.Char
 --5.2
 grid :: Int -> Int -> [(Int,Int)]
 grid m n = [(x,y) | x <- [0..m], y <- [0..n]]
@@ -24,6 +25,24 @@ positions x xs = [i | (x', i) <- zip xs [0..], x == x']
 
 mypositions :: Eq a => a -> [a] -> [Int]
 mypositions x xs = find x [(y,z) | (y,z) <- zip xs [0..]]
+--5.9
+scalarproduct :: [Int] -> [Int] -> Int
+scalarproduct xs ys = sum [x * y | (x,y) <- zip xs ys]
+--5.10
+let2int :: Char -> Int
+let2int c | isLower c = ord c - ord 'a'
+          | otherwise = ord c - ord 'A'
+int2letL :: Int -> Char
+int2letL n = chr (ord 'a' + n)
+int2letU :: Int -> Char
+int2letU n = chr (ord 'A' + n)
+shift :: Int -> Char -> Char
+shift n c | isLower c = int2letL ((let2int c + n) `mod` 26)
+          | isUpper c = int2letU ((let2int c + n) `mod` 26)
+          | otherwise = c
+encode :: Int -> String -> String
+encode n xs = [shift n x | x <- xs]
+
 
 main = do
     --5.1
@@ -43,3 +62,9 @@ main = do
     print $ find 'b' [('a',1), ('b',2),('c',3),('b',4)]
     print $ mypositions False [True, False, True, False]
     print $ mypositions 2 [1,1,3,4,5,2,2,8,2]
+    --5.9
+    print $ scalarproduct [2,3,4] [5,6,7]
+    --5.10
+    print $ shift 3 'a'
+    print $ shift 3 'A'
+    print $ encode 3 "haskell is fun"

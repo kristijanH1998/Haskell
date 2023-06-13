@@ -1,4 +1,4 @@
-import Prelude hiding ((^))
+import Prelude hiding ((^), and, concat, replicate, (!!), elem)
 --6.1
 -- if applied to negative numbers, recursion of fac never terminates because its negative argument is repeatedly decreased by 1 
 -- and never reaches 0
@@ -26,6 +26,29 @@ euclid a b | (a < 0) || (b < 0)     = -1
            | (b == 0)               = a
            | a == b                 = b 
            | otherwise              = if (a < b) then euclid a (b - a) else euclid (a - b) b
+--6.6 a)
+and :: [Bool] -> Bool
+and [] = True
+and (x:xs) = x && and(xs)
+--6.6 b)
+concat :: [[a]] -> [a]
+concat [] = []
+concat (xs : xss) = xs ++ concat xss
+--6.6 c)
+replicate :: Int -> a -> [a]
+replicate 0 _ = []
+replicate n e = [e] ++ replicate (n-1) e
+--6.6 d)
+(!!) :: [a] -> Int -> a
+(!!) [] x = error "Error: The list is empty."
+(!!) (n:ns) 0 = n
+(!!) (n:ns) x = if x < 0 || x > (length (n:ns) - 1) then error "Error: index out of bounds." 
+                                                    else (!!) ns (x-1)
+--6.7 e)
+elem :: Eq a => a -> [a] -> Bool
+elem x [] = False
+elem x (n:ns) = if x == n then True else elem x ns
+
 main = do
     print $ fac(10)
     print $ sumdown(-2)
@@ -39,4 +62,8 @@ main = do
     init [1,2,3] evaluation = {applying init} 1 : init[2,3] = {applying init} 1 : 2 : init [3] = {applying init} 1 : 2 : [] = 
     {list notation} [1,2]
     -}
-    
+    print $ and ([True,True,True,True])
+    print $ concat [[7,8,9], [1,2,3], [4,5,6]]
+    print $ replicate 10 "word"
+    print $ (!!) (['a','b','c','d']) 2
+    print $ elem False [False, False, False]

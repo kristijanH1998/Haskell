@@ -52,7 +52,7 @@ elem x (n:ns) = if x == n then True else elem x ns
 merge :: Ord a => [a] -> [a] -> [a]
 merge [] [] = []
 merge [] (x:xs) = [x] ++ merge [] xs
-merge (x:xs) [] = [x] ++ merge [] xs
+merge (x:xs) [] = [x] ++ merge xs []
 merge (x:xs) (n:ns) = if x >= n then [n] ++ merge (x:xs) ns else [x] ++ merge xs (n:ns)
 
 main = do

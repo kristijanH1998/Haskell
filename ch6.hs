@@ -44,10 +44,16 @@ replicate n e = [e] ++ replicate (n-1) e
 (!!) (n:ns) 0 = n
 (!!) (n:ns) x = if x < 0 || x > (length (n:ns) - 1) then error "Error: index out of bounds." 
                                                     else (!!) ns (x-1)
---6.7 e)
+--6.6 e)
 elem :: Eq a => a -> [a] -> Bool
 elem x [] = False
 elem x (n:ns) = if x == n then True else elem x ns
+--6.7
+merge :: Ord a => [a] -> [a] -> [a]
+merge [] [] = []
+merge [] (x:xs) = [x] ++ merge [] xs
+merge (x:xs) [] = [x] ++ merge [] xs
+merge (x:xs) (n:ns) = if x >= n then [n] ++ merge (x:xs) ns else [x] ++ merge xs (n:ns)
 
 main = do
     print $ fac(10)
@@ -67,3 +73,4 @@ main = do
     print $ replicate 10 "word"
     print $ (!!) (['a','b','c','d']) 2
     print $ elem False [False, False, False]
+    print $ merge [4,7,18,235] [1,3,4]

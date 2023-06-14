@@ -1,4 +1,4 @@
-import Prelude hiding ((^), and, concat, replicate, (!!), elem)
+import Prelude hiding ((^), and, concat, replicate, (!!), elem, sum, take, last)
 --6.1
 -- if applied to negative numbers, recursion of fac never terminates because its negative argument is repeatedly decreased by 1 
 -- and never reaches 0
@@ -62,6 +62,20 @@ msort [] = []
 msort [x] = [x]
 msort [x,y] = if x <= y then [x,y] else [y,x]
 msort (x:xs) = merge (msort (fst (halve (x:xs)))) (msort (snd (halve (x:xs))))
+--6.9 
+sum :: Num a => [a] -> a
+sum [] = 0
+sum (n:ns) = n + sum ns
+
+take :: Int -> [a] -> [a]
+take 0 (n:ns) = []
+take x [] = if (x == 0) then [] else error "Error: the list is empty."
+take x (n:ns) = if (x <= (length (n:ns))) then ([n] ++ (take (x-1) ns)) else error "Error: not that many elements in list."
+
+last :: [a] -> a
+last [] = error "No last element in an empty list."
+last [x] = x
+last (x:xs) = last xs
 
 main = do
     print $ fac(10)
@@ -83,3 +97,6 @@ main = do
     print $ elem False [False, False, False]
     print $ merge [4,7,18,235] [1,3,4]
     print $ msort [64,1,44,12,78,3,4,4,66]
+    print $ sum [2,4,7,9,30]
+    print $ take 1 [2,4,7,9,30,45]
+    print $ last [2,34,5]

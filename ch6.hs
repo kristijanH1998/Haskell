@@ -54,6 +54,14 @@ merge [] [] = []
 merge [] (x:xs) = [x] ++ merge [] xs
 merge (x:xs) [] = [x] ++ merge xs []
 merge (x:xs) (n:ns) = if x >= n then [n] ++ merge (x:xs) ns else [x] ++ merge xs (n:ns)
+--6.8
+halve :: [a] -> ([a],[a])
+halve (x:xs) = splitAt (length (x:xs) `div` 2) (x:xs) 
+msort :: Ord a => [a] -> [a]
+msort [] = []
+msort [x] = [x]
+msort [x,y] = if x <= y then [x,y] else [y,x]
+msort (x:xs) = merge (msort (fst (halve (x:xs)))) (msort (snd (halve (x:xs))))
 
 main = do
     print $ fac(10)
@@ -74,3 +82,4 @@ main = do
     print $ (!!) (['a','b','c','d']) 2
     print $ elem False [False, False, False]
     print $ merge [4,7,18,235] [1,3,4]
+    print $ msort [64,1,44,12,78,3,4,4,66]

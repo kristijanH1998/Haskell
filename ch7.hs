@@ -1,11 +1,13 @@
-import Prelude hiding (map, filter, all, any, takeWhile, dropWhile, curry)
+import Prelude hiding (map, filter, all, any, takeWhile, dropWhile, curry, id, iterate)
+type Bit = Int
 
 map :: (a -> b) -> [a] -> [b]
 map f [] = []
 map f (x:xs) = f x : map f xs
-
 filter :: (a -> Bool) -> [a] -> [a]
 filter p xs = [x | x <- xs, p x]
+id :: a -> a
+id = \x -> x
 --7.1
 mapFilt :: (a -> b) -> (a -> Bool) -> [a] -> [b]
 mapFilt f p [] = []
@@ -44,6 +46,14 @@ curry :: ((a, b) -> c) -> (a -> (b -> c))
 curry f = \x y -> f(x,y)  
 uncurry :: (a -> b -> c) -> ((a, b) -> c)
 uncurry f = \(x,y) -> f x y
+--7.6
+unfold p h t x | p x    = []
+               | otherwise = h x : unfold p h t (t x)
+chop8 :: [Bit] -> [[Bit]]
+chop8 = unfold (== []) (take 8) (drop 8)
+map2 :: (a -> b) -> [a] -> [b]
+map2 f = unfold null (f.head) (tail)
+iterate f = unfold (const False) (id) (f)
 
 main = do
     print $ map (+1) $ filter even [1..10]
@@ -58,3 +68,5 @@ main = do
     print $ mapFldr (*2) [1,2,3,4,5]
     print $ filterFldr (<10) [11,21,2,4,15,22,1] 
     print $ dec2int [7,5,2,7]
+    print $ chop8 [1,0,0,0,0,1,1,0,0,1,0,0,0,1,1,0,1,1,0,0,0,1,1,0]
+    print $ map2 (+2) [1,2,3]

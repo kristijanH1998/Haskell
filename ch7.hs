@@ -36,6 +36,10 @@ dropWhile :: (a -> Bool) -> [a] -> [a]
 dropWhile p [] = []
 dropWhile p (x:xs) = if p x then dropWhile p xs else x:xs
 
+--7.3
+--mapFldr f :: (a -> b) -> [a] -> [b]
+mapFldr f = foldr (\x xs -> f x : xs) []
+
 main = do
     print $ map (+1) $ filter even [1..10]
     print $ mapFilt (+1) even [1..10]
@@ -46,3 +50,4 @@ main = do
     print $ takeWhile (<= 4) [1,2,3,4,5,6,7]
     print $ dropWhile (<= 4) [1,2,3,4,5,6,7]
     print $ dropWhile (even) [4,6,8,9,11,15]
+    print $ mapFldr (*2) [1,2,3,4,5]

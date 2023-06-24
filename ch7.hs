@@ -69,8 +69,11 @@ make8 :: [Bit] -> [Bit]
 make8 bits = take 8 (bits ++ repeat 0) ++ (if even (countOnes bits) then [0] else [1]) 
 encode :: String -> [Bit]
 encode = concat . map (make8 . int2bin . ord)
+checkParity :: [Bit] -> Bool
+checkParity [] = False
+checkParity xs = if ((last xs == 0) && (even (countOnes (init xs)))) || ((last xs == 1) && (not (even (countOnes (init xs))))) then True else False
 decode :: [Bit] -> String
-decode = map (chr . bin2int) . chop8
+decode bits = if all (== True) (map checkParity (chop8 bits)) then map (chr . bin2int) (map init (chop8 bits)) else error "Parity Error"
 transmit :: String -> String
 transmit = decode . channel . encode
 channel :: [Bit] -> [Bit]
@@ -92,7 +95,8 @@ main = do
     print $ chop8 [1,0,0,0,0,1,1,0,0,1,0,0,0,1,1,0,1,1,0,0,0,1,1,0]
     print $ map2 (+2) [1,2,3]
     print $ encode "abc"
-    print $ decode [1,0,0,0,0,1,1,0,0,1,0,0,0,1,1,0,1,1,0,0,0,1,1,0]
+    print $ decode $ encode "abc"
     print $ transmit "Kristijan"
-    print $ countOnes [0,1,1,0,1,1,0,1]
-    print $ make8 [1,1,1]
+    --print $ countOnes [0,1,1,0,1,1,0,1]
+    --print $ make8 [1,1,1]
+    --print $ checkParity [1,0,0,0,1,0,0,1,0]

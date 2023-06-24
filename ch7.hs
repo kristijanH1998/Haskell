@@ -1,4 +1,5 @@
 import Prelude hiding (map, filter, all, any, takeWhile, dropWhile, curry, id, iterate)
+import Data.Char
 type Bit = Int
 
 map :: (a -> b) -> [a] -> [b]
@@ -54,6 +55,26 @@ chop8 = unfold (== []) (take 8) (drop 8)
 map2 :: (a -> b) -> [a] -> [b]
 map2 f = unfold null (f.head) (tail)
 iterate f = unfold (const False) (id) (f)
+--7.7
+bin2int :: [Bit] -> Int
+bin2int bits = sum [w*b | (w,b) <- zip weights bits]
+               where weights = iterate (*2) 1
+int2bin :: Int -> [Bit]
+int2bin 0 = []
+int2bin n = n `mod` 2 : int2bin (n `div` 2)
+countOnes :: [Bit] -> Int
+countOnes [] = 0
+countOnes (x:xs) = if x == 1 then (1 + countOnes xs) else countOnes xs
+make8 :: [Bit] -> [Bit]
+make8 bits = take 8 (bits ++ repeat 0) ++ (if even (countOnes bits) then [0] else [1]) 
+encode :: String -> [Bit]
+encode = concat . map (make8 . int2bin . ord)
+decode :: [Bit] -> String
+decode = map (chr . bin2int) . chop8
+transmit :: String -> String
+transmit = decode . channel . encode
+channel :: [Bit] -> [Bit]
+channel = id
 
 main = do
     print $ map (+1) $ filter even [1..10]
@@ -70,3 +91,8 @@ main = do
     print $ dec2int [7,5,2,7]
     print $ chop8 [1,0,0,0,0,1,1,0,0,1,0,0,0,1,1,0,1,1,0,0,0,1,1,0]
     print $ map2 (+2) [1,2,3]
+    print $ encode "abc"
+    print $ decode [1,0,0,0,0,1,1,0,0,1,0,0,0,1,1,0,1,1,0,0,0,1,1,0]
+    print $ transmit "Kristijan"
+    print $ countOnes [0,1,1,0,1,1,0,1]
+    print $ make8 [1,1,1]

@@ -88,6 +88,11 @@ altMap :: (a -> b) -> (a -> b) -> [a] -> [b]
 altMap f g [] = []
 altMap f g [x] = [f x]
 altMap f g (x:y:xys) = f x : g y : altMap f g xys 
+--7.10
+luhnDouble :: Int -> Int
+luhnDouble x = if (2*x > 9) then (2*x - 9) else (2 * x)
+luhn :: [Int] -> Bool 
+luhn nums = if (sum (altMap (luhnDouble) (id) nums)) `mod` 10 == 0 then True else False
 
 main = do
     print $ map (+1) $ filter even [1..10]
@@ -113,3 +118,4 @@ main = do
     print $ decode [0,1,1,1,0,1,0,0,0]
     --print $ faultyTransmit "A new message."
     print $ altMap (+10) (+100) [0,1,2,3]
+    print $ luhn [5,1,9,8,2]

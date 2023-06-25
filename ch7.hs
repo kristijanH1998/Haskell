@@ -78,6 +78,11 @@ transmit :: String -> String
 transmit = decode . channel . encode
 channel :: [Bit] -> [Bit]
 channel = id
+--7.8
+faultyChannel :: [Bit] -> [Bit]
+faultyChannel bits = tail bits
+faultyTransmit :: String -> String
+faultyTransmit = decode . faultyChannel . encode
 
 main = do
     print $ map (+1) $ filter even [1..10]
@@ -94,10 +99,11 @@ main = do
     print $ dec2int [7,5,2,7]
     print $ map2 (+2) [1,2,3]
     print $ encode "abc"
-    --print $ transmit "Kristijan"
-    --print $ countOnes [0,1,1,0,1,1,0,1]
-    --print $ make8 [1,1,1]
-    --print $ checkParity [1,0,0,0,1,0,0,1,0]
+    print $ transmit "Kristijan"
+    print $ countOnes [0,1,1,0,1,1,0,1]
+    print $ make8 [1,1,1]
+    print $ checkParity [1,0,0,0,1,0,0,1,0]
     print $ encode "Kiki"
     print $ decode $ encode "My secret code"
     print $ decode [0,1,1,1,0,1,0,0,0]
+    --print $ faultyTransmit "A new message."

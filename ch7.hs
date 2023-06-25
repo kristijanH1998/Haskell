@@ -50,15 +50,15 @@ uncurry f = \(x,y) -> f x y
 --7.6
 unfold p h t x | p x    = []
                | otherwise = h x : unfold p h t (t x)
-chop8 :: [Bit] -> [[Bit]]
-chop8 = unfold (== []) (take 8) (drop 8)
+chop9 :: [Bit] -> [[Bit]]
+chop9 = unfold (== []) (take 9) (drop 9)
 map2 :: (a -> b) -> [a] -> [b]
 map2 f = unfold null (f.head) (tail)
 iterate f = unfold (const False) (id) (f)
 --7.7
 bin2int :: [Bit] -> Int
 bin2int bits = sum [w*b | (w,b) <- zip weights bits]
-               where weights = iterate (*2) 1
+               where weights = iterate ( *2) 1
 int2bin :: Int -> [Bit]
 int2bin 0 = []
 int2bin n = n `mod` 2 : int2bin (n `div` 2)
@@ -73,7 +73,7 @@ checkParity :: [Bit] -> Bool
 checkParity [] = False
 checkParity xs = if ((last xs == 0) && (even (countOnes (init xs)))) || ((last xs == 1) && (not (even (countOnes (init xs))))) then True else False
 decode :: [Bit] -> String
-decode bits = if all (== True) (map checkParity (chop8 bits)) then map (chr . bin2int) (map init (chop8 bits)) else error "Parity Error"
+decode bits = if all (== True) (map checkParity (chop9 bits)) then map (chr . bin2int) (map init (chop9 bits)) else error "Parity Error"
 transmit :: String -> String
 transmit = decode . channel . encode
 channel :: [Bit] -> [Bit]
@@ -89,14 +89,15 @@ main = do
     print $ takeWhile (<= 4) [1,2,3,4,5,6,7]
     print $ dropWhile (<= 4) [1,2,3,4,5,6,7]
     print $ dropWhile (even) [4,6,8,9,11,15]
-    print $ mapFldr (*2) [1,2,3,4,5]
+    print $ mapFldr ( *2) [1,2,3,4,5]
     print $ filterFldr (<10) [11,21,2,4,15,22,1] 
     print $ dec2int [7,5,2,7]
-    print $ chop8 [1,0,0,0,0,1,1,0,0,1,0,0,0,1,1,0,1,1,0,0,0,1,1,0]
     print $ map2 (+2) [1,2,3]
     print $ encode "abc"
-    print $ decode $ encode "abc"
-    print $ transmit "Kristijan"
+    --print $ transmit "Kristijan"
     --print $ countOnes [0,1,1,0,1,1,0,1]
     --print $ make8 [1,1,1]
     --print $ checkParity [1,0,0,0,1,0,0,1,0]
+    print $ encode "Kiki"
+    print $ decode $ encode "My secret code"
+    print $ decode [0,1,1,1,0,1,0,0,0]

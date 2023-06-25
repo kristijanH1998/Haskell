@@ -83,6 +83,11 @@ faultyChannel :: [Bit] -> [Bit]
 faultyChannel bits = tail bits
 faultyTransmit :: String -> String
 faultyTransmit = decode . faultyChannel . encode
+--7.9
+altMap :: (a -> b) -> (a -> b) -> [a] -> [b]
+altMap f g [] = []
+altMap f g [x] = [f x]
+altMap f g (x:y:xys) = f x : g y : altMap f g xys 
 
 main = do
     print $ map (+1) $ filter even [1..10]
@@ -107,3 +112,4 @@ main = do
     print $ decode $ encode "My secret code"
     print $ decode [0,1,1,1,0,1,0,0,0]
     --print $ faultyTransmit "A new message."
+    print $ altMap (+10) (+100) [0,1,2,3]

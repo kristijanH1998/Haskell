@@ -97,6 +97,14 @@ occurs x (Node l y r) | (compare x y  == EQ) = True
 --                              GT -> occurs x r
 --This version is more efficient because compare x y is executed only once (requiring 1 comparison), while the original definition 
 --of occurs has to perform 2 comparisons in the worst case
+--8.3
+data Tree2 b = Leaf2 b | Node2 (Tree2 b) (Tree2 b)
+numLeaves :: Tree2 b -> Int
+numLeaves (Leaf2 lf)         = 1
+numLeaves (Node2 l r)        = 0 + (numLeaves l) + (numLeaves r)
+balanced :: Tree2 a -> Bool
+balanced (Leaf2 lf)          = True
+balanced (Node2 l r)         = ((numLeaves l - numLeaves r) <= 1) && (balanced l) && (balanced r)
 
 main = do
     print $ value (Add (Add (Val 2) (Val 3)) (Val 4))
@@ -107,3 +115,5 @@ main = do
     print $ nat2int(add (int2nat(4)) (int2nat(6)))
     print $ nat2int(mult (Succ(Succ Zero)) (Succ(Succ Zero)))
     print $ occurs 4 (Node (Leaf 2) 3 (Node (Leaf 3) 4 (Leaf 7)))
+    print $ numLeaves (Node2 (Node2 (Leaf2 'a') (Leaf2 'b')) (Leaf2 'f'))
+    print $ balanced (Node2 (Node2 (Leaf2 'a') (Node2 (Leaf2 't') (Leaf2 'p'))) (Leaf2 'f'))

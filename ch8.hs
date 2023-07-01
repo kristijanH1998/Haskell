@@ -63,13 +63,25 @@ substs p = map (zip vs) (bools (length vs))
            where vs = rmdups (vars p)
 isTaut :: Prop -> Bool
 isTaut p = and [evalT s p | s <- substs p]
-
 p3 :: Prop
 p3 = Imply (Var 'A') (And (Var 'A') (Var 'B'))
 p4 :: Prop
 p4 = Or (Var 'A') (Not (Var 'A'))
 p5 :: Prop
 p5 = Equiv (Var 'A') (Var 'B')
+--8.1
+data Nat = Zero | Succ Nat
+nat2int :: Nat -> Int
+nat2int Zero  = 0
+nat2int (Succ n) = 1 + nat2int n
+int2nat :: Int -> Nat
+int2nat 0 = Zero
+int2nat n = Succ (int2nat (n-1))
+add :: Nat -> Nat -> Nat
+add m n = int2nat (nat2int m + nat2int n)
+mult :: Nat -> Nat -> Nat
+mult m Zero = Zero
+mult m n = add (mult m (int2nat(nat2int(n)-1))) m
 
 main = do
     print $ value (Add (Add (Val 2) (Val 3)) (Val 4))
@@ -77,3 +89,5 @@ main = do
     print $ isTaut p3
     print $ isTaut p4
     print $ isTaut p5
+    print $ nat2int(add (int2nat(4)) (int2nat(6)))
+    print $ nat2int(mult (Succ(Succ Zero)) (Succ(Succ Zero)))

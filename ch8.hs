@@ -82,6 +82,21 @@ add m n = int2nat (nat2int m + nat2int n)
 mult :: Nat -> Nat -> Nat
 mult m Zero = Zero
 mult m n = add (mult m (int2nat(nat2int(n)-1))) m
+--8.2
+data Tree a = Leaf a | Node (Tree a) a (Tree a)
+occurs :: Ord a => a -> Tree a -> Bool
+occurs x (Leaf y)              = x == y
+occurs x (Node l y r) | (compare x y  == EQ) = True
+                      | (compare x y == LT)  = occurs x l
+                      | otherwise            = occurs x r
+--better definition of occurs:
+--occurs x (Leaf y)         = x == y
+--occurs x (Node l y r)     = case compare x y of
+--                              LT -> occurs x l
+--                              EQ -> True
+--                              GT -> occurs x r
+--This version is more efficient because compare x y is executed only once (requiring 1 comparison), while the original definition 
+--of occurs has to perform 2 comparisons in the worst case
 
 main = do
     print $ value (Add (Add (Val 2) (Val 3)) (Val 4))
@@ -91,3 +106,4 @@ main = do
     print $ isTaut p5
     print $ nat2int(add (int2nat(4)) (int2nat(6)))
     print $ nat2int(mult (Succ(Succ Zero)) (Succ(Succ Zero)))
+    print $ occurs 4 (Node (Leaf 2) 3 (Node (Leaf 3) 4 (Leaf 7)))

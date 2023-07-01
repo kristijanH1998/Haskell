@@ -105,6 +105,13 @@ numLeaves (Node2 l r)        = 0 + (numLeaves l) + (numLeaves r)
 balanced :: Tree2 a -> Bool
 balanced (Leaf2 lf)          = True
 balanced (Node2 l r)         = ((numLeaves l - numLeaves r) <= 1) && (balanced l) && (balanced r)
+--8.4
+splitInHalf :: [a] -> ([a],[a])
+splitInHalf [] = ([],[])
+splitInHalf xs = splitAt (length xs `div` 2) xs
+balance :: [a] -> Tree2 a
+balance [x] = Leaf2 x
+balance xs = Node2 (balance (fst (splitInHalf xs))) (balance (snd (splitInHalf xs)))
 
 main = do
     print $ value (Add (Add (Val 2) (Val 3)) (Val 4))
@@ -117,3 +124,5 @@ main = do
     print $ occurs 4 (Node (Leaf 2) 3 (Node (Leaf 3) 4 (Leaf 7)))
     print $ numLeaves (Node2 (Node2 (Leaf2 'a') (Leaf2 'b')) (Leaf2 'f'))
     print $ balanced (Node2 (Node2 (Leaf2 'a') (Node2 (Leaf2 't') (Leaf2 'p'))) (Leaf2 'f'))
+    print $ balanced (balance [1,2,3,4,5,6,7,8,9,10,11])
+    print $ numLeaves (balance [1,2,3,4,5,6,7,8,9,10,11])

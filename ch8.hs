@@ -1,4 +1,4 @@
-import Prelude hiding ()
+import Prelude hiding (Maybe, Just, Nothing)
 import Data.Char
 --8.9
 data Expr = Val Int | Add Expr Expr | Mult Expr Expr
@@ -124,6 +124,20 @@ eval' (Add' exp1 exp2) = folde fromIntegral (+) (Add' exp1 exp2)
 size :: Expr' -> Int
 size (Val' _) = 1
 size (Add' exp1 exp2) = size (exp1) + size (exp2)
+--8.7
+data Maybe a = Nothing | Just a
+instance Eq a => Eq (Maybe a) where
+  Nothing == Nothing = True
+  Just _  == Just _  = True
+  _       == _       = False
+
+{-
+instance Eq a => Eq [a] where
+  [] == [] = True
+  [x] == [y] = x == y
+  (x:xs) == (y:ys) = (x == y) && (xs == ys)
+  _ == _ = False
+-}
 
 main = do
     print $ value (Add (Add (Val 2) (Val 3)) (Val 4))

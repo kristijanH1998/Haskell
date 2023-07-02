@@ -116,12 +116,14 @@ balance xs = Node2 (balance (fst (splitInHalf xs))) (balance (snd (splitInHalf x
 data Expr' = Val' Int | Add' Expr' Expr'
 folde :: (Int -> a) -> (a -> a -> a) -> Expr' -> a
 folde f g (Val' n) = f n
-folde f g (Add' x y) = g (folde f g (x)) (folde f g (y))
+folde f g (Add' exp1 exp2) = g (folde f g (exp1)) (folde f g (exp2))
 --8.6
 eval' :: Expr' -> Int
 eval' (Val' n) = fromIntegral n
-eval' (Add' x y) = folde fromIntegral (+) (Add' x y)
-
+eval' (Add' exp1 exp2) = folde fromIntegral (+) (Add' exp1 exp2)
+size :: Expr' -> Int
+size (Val' _) = 1
+size (Add' exp1 exp2) = size (exp1) + size (exp2)
 
 main = do
     print $ value (Add (Add (Val 2) (Val 3)) (Val 4))
@@ -138,3 +140,4 @@ main = do
     print $ numLeaves (balance [1,2,3,4,5,6,7,8,9])
     print $ eval' (Val' 2)
     print $ eval' (Add' (Val' 5) (Val' 17))
+    print $ size (Add' (Add' (Val' 5) (Val' 17)) (Val' 11))

@@ -112,6 +112,11 @@ splitInHalf xs = splitAt (length xs `div` 2) xs
 balance :: [a] -> Tree2 a
 balance [x] = Leaf2 x
 balance xs = Node2 (balance (fst (splitInHalf xs))) (balance (snd (splitInHalf xs)))
+--8.5
+data Expr' = Val' Int | Add' Expr' Expr'
+folde :: (Int -> a) -> (a -> a -> a) -> Expr' -> a
+folde f g (Val' n) = f n
+folde f g (Add' x y) = g (folde f g (x)) (folde f g (y))
 
 main = do
     print $ value (Add (Add (Val 2) (Val 3)) (Val 4))
@@ -125,4 +130,4 @@ main = do
     print $ numLeaves (Node2 (Node2 (Leaf2 'a') (Leaf2 'b')) (Leaf2 'f'))
     print $ balanced (Node2 (Node2 (Leaf2 'a') (Node2 (Leaf2 't') (Leaf2 'p'))) (Leaf2 'f'))
     print $ balanced (balance [1,2,3,4,5,6,7,8,9,10,11])
-    print $ numLeaves (balance [1,2,3,4,5,6,7,8,9,10,11])
+    print $ numLeaves (balance [1,2,3,4,5,6,7,8,9])

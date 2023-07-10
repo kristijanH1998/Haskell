@@ -83,7 +83,7 @@ its recursive calls would no longer be guaranteed to reduce the length of the li
 allExprs :: [Int] -> [Expr]
 allExprs xs = [exp | choice <- choices xs, exp <- exprs choice]
 successfuls :: [Expr] -> [Expr]
-successfuls exps = [sucExp | sucExp <- exps, eval sucExp >= [0]]  
+successfuls exps = [sucExp | sucExp <- exps, eval sucExp >= [0], round (fromIntegral (head (eval sucExp))) >= 1]  
 
 main = do
     --print $ show (App Add (Val 1) (App Mul (Val 2) (Val 3)))
@@ -101,6 +101,3 @@ main = do
 --9.4
     print $ length (allExprs [1,3,7,10,25,50])
     print $ length (successfuls (allExprs [1,3,7,10,25,50]))
-    --print $ round (fromIntegral (head (eval (head (allExprs [1,3,7,10,25,50]))))) -- >= 1 && 
-                                --head (eval (head (allExprs [1,3,7,10,25,50]))) >= 0
-    --print $ (round (fromIntegral ((head (eval (App Add (Val 1) (App Mul (Val 2) (Val 3))))))))

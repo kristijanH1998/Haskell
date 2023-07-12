@@ -93,7 +93,7 @@ instance Show Op' where
     show Div' = "/"
 valid' :: Op' -> Integer -> Integer -> Bool
 valid' Add' _ _ = True
-valid' Sub' x y = x >= y
+valid' Sub' x y = True
 valid' Mul' _ _ = True
 valid' Div' x y = (y /= 0) && (x `mod` y == 0)
 apply' :: Op' -> Integer -> Integer -> Integer

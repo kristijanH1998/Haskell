@@ -84,6 +84,75 @@ allExprs :: [Int] -> [Expr]
 allExprs xs = [exp | choice <- choices xs, exp <- exprs choice]
 successfuls :: [Expr] -> [Expr]
 successfuls exps = [sucExp | sucExp <- exps, eval sucExp >= [0], round (fromIntegral (head (eval sucExp))) >= 1]  
+--9.5
+data Op' = Add' | Sub' | Mul' | Div'
+instance Show Op' where
+    show Add' = "+"
+    show Sub' = "-"
+    show Mul' = "*"
+    show Div' = "/"
+valid' :: Op' -> Integer -> Integer -> Bool
+valid' Add' _ _ = True
+valid' Sub' x y = x >= y
+valid' Mul' _ _ = True
+valid' Div' x y = (y /= 0) && (x `mod` y == 0)
+apply' :: Op' -> Integer -> Integer -> Integer
+apply' Add' x y = x + y
+apply' Sub' x y = x - y
+apply' Mul' x y = x * y
+apply' Div' x y = x `div` y 
+data Expr' = Val' Integer | App' Op' Expr' Expr'
+instance Show Expr' where
+    show (Val' n)     = show n
+    show (App' o l r) = brak l ++ show o ++ brak r
+                       where
+                            brak (Val' n) = show n
+                            brak e       = "(" ++ show e ++ ")"
+values' :: Expr' -> [Integer]
+values' (Val' n)  = [n]
+values' (App' _ l r) = values' l ++ values' r
+eval' :: Expr' -> [Integer]
+eval' (Val' n) = [n | n > 0]
+eval' (App' o l r) = [apply' o x y | x <- eval' l,
+                                  y <- eval' r,
+                                  valid' o x y]
+subs' :: [a] -> [[a]]
+subs' []     = [[]]
+subs' (x:xs) = yss ++ map (x:) yss
+              where yss = subs' xs
+interleave' :: a -> [a] -> [[a]]
+interleave' x []     = [[x]]
+interleave' x (y:ys) = (x:y:ys) : map (y:) (interleave' x ys)
+perms' :: [a] -> [[a]]
+perms' []     = [[]]
+perms' (x:xs) = concat (map (interleave' x) (perms' xs))
+choices' :: [a] -> [[a]]
+choices' = concat . map perms' . subs'
+solution' :: Expr' -> [Integer] -> Integer -> Bool
+solution' e ns n = 
+    elem (values' e) (choices' ns) && eval' e == [n]
+split' :: [a] -> [([a],[a])]
+split' []        = []
+split' [_]       = []
+split' (x:xs)    = ([x],xs) : [(x:ls,rs) | (ls,rs) <- split' xs]
+exprs' :: [Integer] -> [Expr']
+exprs' []    = []
+exprs' [n]   = [Val' n]
+exprs' ns    = [e | (ls,rs) <- split' ns,
+                   l       <- exprs' ls,
+                   r       <- exprs' rs,
+                   e       <- combine' l r]
+combine' :: Expr' -> Expr' -> [Expr']
+combine' l r = [App' o l r | o <- ops']
+ops' :: [Op']
+ops' = [Add',Sub',Mul',Div']
+solutions' :: [Integer] -> Integer -> [Expr']
+solutions' ns n = [e | ns' <- choices' ns, e <- exprs' ns', eval' e == [n]]
+allExprs' :: [Integer] -> [Expr']
+allExprs' xs = [exp | choice <- choices' xs, exp <- exprs' choice]
+successfuls' :: [Expr'] -> [Expr']
+successfuls' exps = [sucExp | sucExp <- exps, eval' sucExp >= [0], round (fromIntegral (head (eval' sucExp))) >= 1]
+
 
 main = do
     --print $ show (App Add (Val 1) (App Mul (Val 2) (Val 3)))
@@ -101,3 +170,5 @@ main = do
 --9.4
     print $ length (allExprs [1,3,7,10,25,50])
     print $ length (successfuls (allExprs [1,3,7,10,25,50]))
+--9.5
+    print $ length (successfuls' (allExprs' [1,3,7,10,25,50])) 

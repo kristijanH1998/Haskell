@@ -83,24 +83,35 @@ its recursive calls would no longer be guaranteed to reduce the length of the li
 allExprs :: [Int] -> [Expr]
 allExprs xs = [exp | choice <- choices xs, exp <- exprs choice]
 successfuls :: [Expr] -> [Expr]
-successfuls exps = [sucExp | sucExp <- exps, eval sucExp >= [0], round (fromIntegral (head (eval sucExp))) >= 1]  
---9.5
-data Op' = Add' | Sub' | Mul' | Div'
-instance Show Op' where
-    show Add' = "+"
-    show Sub' = "-"
-    show Mul' = "*"
-    show Div' = "/"
+successfuls exps = [sucExp | sucExp <- exps, eval sucExp >= [0], round (fromIntegral (head (eval sucExp))) >= 1]   
+{- 9.5
 valid' :: Op' -> Integer -> Integer -> Bool
 valid' Add' _ _ = True
 valid' Sub' x y = True
 valid' Mul' _ _ = True
 valid' Div' x y = (y /= 0) && (x `mod` y == 0)
+-} 
+
+--9.6
+data Op' = Add' | Sub' | Mul' | Div' | Exp'
+instance Show Op' where
+    show Add' = "+"
+    show Sub' = "-"
+    show Mul' = "*"
+    show Div' = "/"
+    show Exp' = "^"
+valid' :: Op' -> Integer -> Integer -> Bool
+valid' Add' _ _ = True
+valid' Sub' x y = x >= y
+valid' Mul' _ _ = True
+valid' Div' x y = (y /= 0) && (x `mod` y == 0)
+valid' Exp' x y = y >= 0
 apply' :: Op' -> Integer -> Integer -> Integer
 apply' Add' x y = x + y
 apply' Sub' x y = x - y
 apply' Mul' x y = x * y
-apply' Div' x y = x `div` y 
+apply' Div' x y = x `div` y
+apply' Exp' x y = x ^ y 
 data Expr' = Val' Integer | App' Op' Expr' Expr'
 instance Show Expr' where
     show (Val' n)     = show n
@@ -145,14 +156,18 @@ exprs' ns    = [e | (ls,rs) <- split' ns,
 combine' :: Expr' -> Expr' -> [Expr']
 combine' l r = [App' o l r | o <- ops']
 ops' :: [Op']
-ops' = [Add',Sub',Mul',Div']
+ops' = [Add',Sub',Mul',Div',Exp']
+listToInt :: [Integer] -> Integer
+listToInt [] = 0
+listToInt [x] = x
 solutions' :: [Integer] -> Integer -> [Expr']
-solutions' ns n = [e | ns' <- choices' ns, e <- exprs' ns', eval' e == [n]]
+-- (eval' e == [n] || ((subtract (head (eval' e)) n) <= 1)) makes sure solutions outputs both exact solutions and those that are
+-- by 1 smaller or larger than the goal value
+solutions' ns n = [e | ns' <- choices' ns, e <- exprs' ns', (eval' e == [n]) || (abs (subtract (listToInt (eval' e)) n) <= 1)]
 allExprs' :: [Integer] -> [Expr']
 allExprs' xs = [exp | choice <- choices' xs, exp <- exprs' choice]
 successfuls' :: [Expr'] -> [Expr']
 successfuls' exps = [sucExp | sucExp <- exps, eval' sucExp >= [0], round (fromIntegral (head (eval' sucExp))) >= 1]
-
 
 main = do
     --print $ show (App Add (Val 1) (App Mul (Val 2) (Val 3)))
@@ -168,7 +183,10 @@ main = do
     print $ split [1,2,3,4]
     --print $ solutions [1,3,7,10,25,50] 765
 --9.4
-    print $ length (allExprs [1,3,7,10,25,50])
-    print $ length (successfuls (allExprs [1,3,7,10,25,50]))
+    --print $ length (allExprs [1,3,7,10,25,50])
+    --print $ length (successfuls (allExprs [1,3,7,10,25,50]))
 --9.5
-    print $ length (successfuls' (allExprs' [1,3,7,10,25,50])) 
+    --print $ length (successfuls' (allExprs' [1,3,7,10,25,50]))
+--9.6
+    print $ solutions' [2,3,4] 24
+    print $ solutions' [2,3,4] 10

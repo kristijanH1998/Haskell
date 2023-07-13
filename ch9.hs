@@ -1,5 +1,6 @@
 import Prelude hiding ()
 import Data.Typeable
+import Data.List
 data Op = Add | Sub | Mul | Div
 instance Show Op where
     show Add = "+"
@@ -91,7 +92,6 @@ valid' Sub' x y = True
 valid' Mul' _ _ = True
 valid' Div' x y = (y /= 0) && (x `mod` y == 0)
 -} 
-
 --9.6
 data Op' = Add' | Sub' | Mul' | Div' | Exp'
 instance Show Op' where
@@ -160,10 +160,20 @@ ops' = [Add',Sub',Mul',Div',Exp']
 listToInt :: [Integer] -> Integer
 listToInt [] = 0
 listToInt [x] = x
+isEmpty :: [a] -> Bool
+isEmpty = \myList ->
+  case myList of
+    [] -> True 
+    _ -> False
 solutions' :: [Integer] -> Integer -> [Expr']
--- (eval' e == [n]) || (abs (subtract (listToInt (eval' e)) n) <= 1) makes sure solutions outputs both exact solutions and those that are
--- by 1 smaller or larger than the goal value
-solutions' ns n = [e | ns' <- choices' ns, e <- exprs' ns', (eval' e == [n]) || (abs (subtract (listToInt (eval' e)) n) <= 1)]
+{- solutions' outputs all solutions that give the result that is by 1 smaller or larger than the goal value IFF solutionsAux
+cannot produce output that results in the exact goal value. The "sortBy (\exp1 exp2 -> compare (length (values' exp1))" part
+sorts the output expressions by the number of Val (values) in expressions, such that expressions are sorted in ascending order
+by number of values -}
+solutions' ns n = if (isEmpty (solutionsAux ns n)) then sortBy (\exp1 exp2 -> compare (length (values' exp1)) (length (values' exp2))) [e | ns' <- choices' ns, e <- exprs' ns', (abs (subtract (listToInt (eval' e)) n) <= 1)] 
+                                                    else solutionsAux ns n
+solutionsAux :: [Integer] -> Integer -> [Expr']
+solutionsAux ns n = sortBy (\exp1 exp2 -> compare (length (values' exp1)) (length (values' exp2))) [e | ns' <- choices' ns, e <- exprs' ns', (eval' e == [n])]
 allExprs' :: [Integer] -> [Expr']
 allExprs' xs = [exp | choice <- choices' xs, exp <- exprs' choice]
 successfuls' :: [Expr'] -> [Expr']
@@ -189,4 +199,4 @@ main = do
     --print $ length (successfuls' (allExprs' [1,3,7,10,25,50]))
 --9.6
     print $ solutions' [2,3,4] 24
-    print $ solutions' [2,3,4] 10
+    print $ solutions' [2,3,4] 15

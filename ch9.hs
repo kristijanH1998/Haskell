@@ -161,7 +161,7 @@ listToInt :: [Integer] -> Integer
 listToInt [] = 0
 listToInt [x] = x
 solutions' :: [Integer] -> Integer -> [Expr']
--- (eval' e == [n] || ((subtract (head (eval' e)) n) <= 1)) makes sure solutions outputs both exact solutions and those that are
+-- (eval' e == [n]) || (abs (subtract (listToInt (eval' e)) n) <= 1) makes sure solutions outputs both exact solutions and those that are
 -- by 1 smaller or larger than the goal value
 solutions' ns n = [e | ns' <- choices' ns, e <- exprs' ns', (eval' e == [n]) || (abs (subtract (listToInt (eval' e)) n) <= 1)]
 allExprs' :: [Integer] -> [Expr']

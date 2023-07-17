@@ -35,13 +35,14 @@ putBoard [a,b,c,d,e] = do putRow 1 a
                           putRow 4 d
                           putRow 5 e
 --10.2
-myPutBoard :: Board -> Int -> IO ()
-myPutBoard [] _                   = return ()
-myPutBoard (starNum:starNums) row = do putRow row starNum
-                                       myPutBoard starNums (row+1)                                       
+myPutBoard (starNum:starNums) = myPutBoardAux (starNum:starNums) 1
+myPutBoardAux :: Board -> Int -> IO ()
+myPutBoardAux [] _                   = return ()
+myPutBoardAux (starNum:starNums) row = do putRow row starNum
+                                          myPutBoardAux starNums (row+1)                                       
 --10.3
---putBoard2 :: Board -> IO ()
---putBoard2 board = sequence_ [putRow row stars | row <- [1..],  ]
+myPutBoard2 :: Board -> IO ()
+myPutBoard2 board = sequence_ [putRow row stars | (row,stars) <- zip [1..] board]
 
 getDigit :: String -> IO Int
 getDigit prompt = do putStr prompt
@@ -86,4 +87,5 @@ main = do
     putStr1 ("This is a sentence.\n")
     putBoard initial 
     --nim
-    myPutBoard [8,7,6,5,4,3,2,1] 1
+    myPutBoard [10,9,8,7,6,5,4,3,2,1]
+    myPutBoard2 [10,9,8,7,6,5,4,3,2,1]

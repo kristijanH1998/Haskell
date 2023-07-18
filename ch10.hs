@@ -83,27 +83,17 @@ putStr1 :: String -> IO ()
 putStr1 [] = return ()
 putStr1 str = sequence_ [putChar c | c <- str]
 --10.4
-{-
---adder :: IO ()
+adder :: IO ()
 adder = do putStrLn "How many numbers? "
            nums <- getLine
            if nums /= "0" then 
-               sum <- adderAux 0 (read nums :: Int)
-                
+               do
+                  putStr "The total is " 
+                  adderAux 0 (read nums :: Int) 
            else
-               sum <- sum + adderAux 0 (read nums :: Int)
-               print sum
-           --newline
-           --if nums > 0
-
-
-           --num <- (adderAux 0 1)
-           --print num
-           --newline
--}
-
-adderAux :: Int -> Int -> IO Int
-adderAux curTotal 0 = return curTotal
+               putStrLn "0"
+adderAux :: Int -> Int -> IO ()
+adderAux curTotal 0 = do putStrLn $ (show curTotal)         
 adderAux curTotal numsRem = do num <- getLine
                                adderAux (curTotal + (read num :: Int)) (numsRem - 1)
 
@@ -113,5 +103,5 @@ main = do
     --nim
     myPutBoard [10,9,8,7,6,5,4,3,2,1]
     myPutBoard2 [10,9,8,7,6,5,4,3,2,1]
-    print $ read (adderAux 0 3) :: Int
-    --adder
+    --adderAux 0 3
+    adder

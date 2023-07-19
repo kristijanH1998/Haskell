@@ -96,12 +96,17 @@ adderAux :: Int -> Int -> IO ()
 adderAux curTotal 0 = do putStrLn $ (show curTotal)         
 adderAux curTotal numsRem = do num <- getLine
                                adderAux (curTotal + (read num :: Int)) (numsRem - 1)
-
+--10.5
+adder' :: IO ()
+adder' = do putStrLn "How many numbers? "
+            n <- getLine
+            nums <- sequence [getLine | _ <- [1..(read n :: Int)]]
+            putStrLn $ "The total is " ++ show (sum [(read num :: Int) | num <- nums])
 main = do
     putStr1 ("This is a sentence.\n")
     putBoard initial 
     --nim
     myPutBoard [10,9,8,7,6,5,4,3,2,1]
     myPutBoard2 [10,9,8,7,6,5,4,3,2,1]
-    --adderAux 0 3
-    adder
+    --adder
+    adder'

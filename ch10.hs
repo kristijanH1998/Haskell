@@ -105,8 +105,11 @@ adder' = do putStrLn "How many numbers? "
 --10.6
 readLine :: IO String
 readLine = do ch <- getChar
-              if ch /= '\n'
-                  return ch ++ readLine
+              if ch == '\n' then
+                  return ""
+              else
+                  do chs <- getLine 
+                     return (ch:chs)
 
 
 main = do
@@ -116,4 +119,6 @@ main = do
     myPutBoard [10,9,8,7,6,5,4,3,2,1]
     myPutBoard2 [10,9,8,7,6,5,4,3,2,1]
     --adder
-    adder'
+    --adder'
+    str <- readLine
+    print str

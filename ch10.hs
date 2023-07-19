@@ -107,10 +107,13 @@ readLine :: IO String
 readLine = do ch <- getChar
               if ch == '\n' then
                   return ""
-              else
-                  do chs <- getLine 
+              else if ch == '\DEL' then
+                  do putChar '\b'
+                     chs <- readLine
                      return (ch:chs)
-
+              else
+                  do chs <- readLine 
+                     return (ch:chs)
 
 main = do
     putStr1 ("This is a sentence.\n")

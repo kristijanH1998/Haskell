@@ -102,6 +102,13 @@ adder' = do putStrLn "How many numbers? "
             n <- getLine
             nums <- sequence [getLine | _ <- [1..(read n :: Int)]]
             putStrLn $ "The total is " ++ show (sum [(read num :: Int) | num <- nums])
+--10.6
+readLine :: IO String
+readLine = do ch <- getChar
+              if ch /= '\n'
+                  return ch ++ readLine
+
+
 main = do
     putStr1 ("This is a sentence.\n")
     putBoard initial 

@@ -103,17 +103,33 @@ adder' = do putStrLn "How many numbers? "
             nums <- sequence [getLine | _ <- [1..(read n :: Int)]]
             putStrLn $ "The total is " ++ show (sum [(read num :: Int) | num <- nums])
 --10.6
+withoutDeleted :: String -> String
+withoutDeleted [] = ""
+withoutDeleted ['\DEL'] = ""
+withoutDeleted (first:second:rest) = if first == '\DEL' then withoutDeleted (second:rest) else
+                                       if second == '\DEL' then withoutDeleted rest else ([first] ++ [second] ++ withoutDeleted rest)
+
+readLineAux :: IO String
+readLineAux = do ch <- getChar
+                 if ch == '\n' then 
+                      do newline
+                         return []
+                 else 
+                   if ch == '\DEL' then 
+                      do 
+                         putChar '\b'
+                         putChar ' '
+                         putChar '\b'
+                         chs <- readLineAux
+                         return (ch:chs)
+                   else 
+                        do 
+                           putChar ch
+                           chs <- readLineAux 
+                           return (ch:chs)
 readLine :: IO String
-readLine = do ch <- getChar
-              if ch == '\n' then
-                  return ""
-              else if ch == '\DEL' then
-                  do putChar '\b'
-                     chs <- readLine
-                     return (ch:chs)
-              else
-                  do chs <- readLine 
-                     return (ch:chs)
+readLine = do str <- readLineAux
+              return (withoutDeleted str)
 
 main = do
     putStr1 ("This is a sentence.\n")

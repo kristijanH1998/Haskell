@@ -123,10 +123,18 @@ play' g p
                     [g'] -> play g' (next p)
   | p == X   = do putStr "Player X is thinking..."
                   (play $! (bestmove g p)) (next p)                  
+--11.1
+numOfNodesAux :: Tree Grid -> Int
+numOfNodesAux (Node g childNodes) = if (length childNodes) >= 1 then (length childNodes) + (sum (map numOfNodesAux childNodes))
+                                 else 0
+numOfNodes :: Tree Grid -> Int
+numOfNodes tree = 1 + numOfNodesAux tree
 
 main = do
-    print $ showRow [O,B,X]
+    --print $ showRow [O,B,X]
     --print $ foldr1 (zipWith (++)) (interleave (replicate 3 "|") (map showPlayer [O,B,X]))
     --print $ (interleave (replicate 3 "|") (map showPlayer [O,B,X]))
     --print $ (zipWith (++)) ["   "," O ","   "] ["|","|","|"]
-    main'
+    --main'
+    print $ numOfNodes (gametree empty O)
+    

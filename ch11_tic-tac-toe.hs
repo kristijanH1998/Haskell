@@ -126,9 +126,13 @@ play' g p
 --11.1
 numOfNodesAux :: Tree Grid -> Int
 numOfNodesAux (Node g childNodes) = if (length childNodes) >= 1 then (length childNodes) + (sum (map numOfNodesAux childNodes))
-                                 else 0
+                                    else 0
 numOfNodes :: Tree Grid -> Int
 numOfNodes tree = 1 + numOfNodesAux tree
+findDepth :: Tree Grid -> Int
+findDepth (Node g childNodes) = if (length childNodes) >= 1 then maximum (map findDepth childNodes) + 1
+                                else 0
+
 
 main = do
     --print $ showRow [O,B,X]
@@ -136,5 +140,8 @@ main = do
     --print $ (interleave (replicate 3 "|") (map showPlayer [O,B,X]))
     --print $ (zipWith (++)) ["   "," O ","   "] ["|","|","|"]
     --main'
+    
+    --11.1
     print $ numOfNodes (gametree empty O)
+    print $ findDepth (gametree empty O) 
     

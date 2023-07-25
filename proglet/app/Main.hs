@@ -1,4 +1,6 @@
-import Prelude hiding (putStr, putStrLn)
+module Main where
+
+import Prelude 
 import Data.Char
 import Data.List
 import System.IO
@@ -72,7 +74,7 @@ prompt p = "Player " ++ show p ++ ", enter your move: "
 data Tree a = Node a [Tree a]
               deriving Show
 gametree :: Grid -> Player -> Tree Grid
-gametree g p = Node g [gametree g' (next p) | g' <- moves g p]
+gametree g p = Node g [gametree g' (Main.next p) | g' <- moves g p]
 moves :: Grid -> Player -> [Grid]
 moves g p 
   | won g = []
@@ -121,9 +123,9 @@ play' g p
                   case move g i p of
                     [] -> do putStrLn "ERROR: Invalid move"
                              play' g p
-                    [g'] -> play g' (next p)
+                    [g'] -> play g' (Main.next p)
   | p == X   = do putStr "Player X is thinking..."
-                  (play $! (bestmove g p)) (next p)                  
+                  (play $! (bestmove g p)) (Main.next p)                  
 --11.1
 numOfNodesAux :: Tree Grid -> Int
 numOfNodesAux (Node g childNodes) = if (length childNodes) >= 1 then (length childNodes) + (sum (map numOfNodesAux childNodes))
@@ -134,15 +136,8 @@ findDepth :: Tree Grid -> Int
 findDepth (Node g childNodes) = if (length childNodes) >= 1 then maximum (map findDepth childNodes) + 1
                                 else 0
 
-
+main :: IO ()
 main = do
-    --print $ showRow [O,B,X]
-    --print $ foldr1 (zipWith (++)) (interleave (replicate 3 "|") (map showPlayer [O,B,X]))
-    --print $ (interleave (replicate 3 "|") (map showPlayer [O,B,X]))
-    --print $ (zipWith (++)) ["   "," O ","   "] ["|","|","|"]
-    --main'
-    
-    --11.1
-    --print $ numOfNodes (gametree empty O)
-    print $ findDepth (gametree empty O) 
-    
+   print $ showPlayer O
+   --print $ randomRIO (1,10)
+

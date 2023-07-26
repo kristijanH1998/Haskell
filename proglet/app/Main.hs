@@ -138,10 +138,37 @@ numOfNodes tree = 1 + numOfNodesAux tree
 findDepth :: Tree Grid -> Int
 findDepth (Node g childNodes) = if (length childNodes) >= 1 then maximum (map findDepth childNodes) + 1
                                 else 0 
+--11.3
+play2 :: Grid -> Player -> IO ()
+play2 g p = do cls
+               goto (1,1)
+               putGrid g
+               play2 g p
+play2' :: Grid -> Player -> IO ()
+play2' g p
+  | wins O g = putStrLn "Player O wins!\n"
+  | wins X g = putStrLn "Player X wins!\n"
+  | full g   = putStrLn "It's a draw!\n"
+  | p == O   = do i <- getNat (prompt p)
+                  case move g i p of
+                    [] -> do putStrLn "ERROR: Invalid move"
+                             play2' g p
+                    [g'] -> play2 g' (Main.next p)
+  | p == X   = do putStr "Player X is thinking..."
+                  --11.2
+                  let listbestmoves = bestmoves g p
+                  --let mindepthpath = foldr1 max (map findDepth listbestmoves)
+                  randIndex <- randomRIO (0, length listbestmoves - 1)
+                  (play2 $! (listbestmoves !! randIndex)) (Main.next p)
+
 
 main = do
    print $ showPlayer O
    --testing randomRIO
    number <- randomRIO (0,10) :: IO Int
    putStrLn ("Your random number is: " ++ show number)
-
+   --main'
+   print $ findDepth (gametree empty O)
+   --print $ [gametree g O | g <- (bestmoves empty O)]
+   print $ foldr1 min (map findDepth [gametree g O | g <- (bestmoves empty O)])
+   print $ map findDepth [gametree g X | g <- (moves empty X)]

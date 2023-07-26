@@ -96,9 +96,9 @@ minimax (Node g ts)
                   where
                     ts' = map minimax ts
                     ps = [p | Node (_,p) _ <- ts']
-bestmove :: Grid -> Player -> Grid
-bestmove g p = head [g' | Node (g',p') _ <- ts, p' == best]
-               where
+bestmoves :: Grid -> Player -> [Grid]
+bestmoves g p = [g' | Node (g',p') _ <- ts, p' == best]
+                where
                   tree = prune depth (gametree g p)
                   Node (_,best) ts = minimax tree
 type Pos = (Int,Int)
@@ -125,7 +125,10 @@ play' g p
                              play' g p
                     [g'] -> play g' (Main.next p)
   | p == X   = do putStr "Player X is thinking..."
-                  (play $! (bestmove g p)) (Main.next p)                  
+                  --11.2
+                  let listbestmoves = bestmoves g p
+                  randIndex <- randomRIO (0, length listbestmoves - 1)
+                  (play $! (listbestmoves !! randIndex)) (Main.next p)                  
 --11.1
 numOfNodesAux :: Tree Grid -> Int
 numOfNodesAux (Node g childNodes) = if (length childNodes) >= 1 then (length childNodes) + (sum (map numOfNodesAux childNodes))
@@ -134,10 +137,11 @@ numOfNodes :: Tree Grid -> Int
 numOfNodes tree = 1 + numOfNodesAux tree
 findDepth :: Tree Grid -> Int
 findDepth (Node g childNodes) = if (length childNodes) >= 1 then maximum (map findDepth childNodes) + 1
-                                else 0
+                                else 0 
 
-main :: IO ()
 main = do
    print $ showPlayer O
-   --print $ randomRIO (1,10)
+   --testing randomRIO
+   number <- randomRIO (0,10) :: IO Int
+   putStrLn ("Your random number is: " ++ show number)
 

@@ -155,11 +155,20 @@ play2' g p
                              play2' g p
                     [g'] -> play2 g' (Main.next p)
   | p == X   = do putStr "Player X is thinking..."
-                  --11.2
                   let listbestmoves = bestmoves g p
-                  --let mindepthpath = foldr1 max (map findDepth listbestmoves)
+                  {- 11.2
                   randIndex <- randomRIO (0, length listbestmoves - 1)
-                  (play2 $! (listbestmoves !! randIndex)) (Main.next p)
+                  (play2 $! (listbestmoves !! randIndex)) (Main.next p) -}
+                  --11.3
+                  let mindepth = foldr1 min (map findDepth [gametree g (Main.next p) | g <- listbestmoves])
+                  let shortestpath = getIndexOf mindepth (map findDepth [gametree g (Main.next p) | g <- listbestmoves])
+                  (play2 $! (listbestmoves !! shortestpath)) (Main.next p) 
+
+--11.3 function that finds the index of the first element in the list that is equal to the second argument it receives
+getIndexOf :: Int -> [Int] -> Int
+getIndexOf elem (x:xs) = case (elemIndex elem (x:xs)) of 
+                            Just num -> num
+                            Nothing -> 0
 
 
 main = do
@@ -171,4 +180,13 @@ main = do
    print $ findDepth (gametree empty O)
    --print $ [gametree g O | g <- (bestmoves empty O)]
    print $ foldr1 min (map findDepth [gametree g O | g <- (bestmoves empty O)])
-   print $ map findDepth [gametree g X | g <- (moves empty X)]
+   --the logic below will be used for 11.3
+   print $ map findDepth [gametree g X | g <- (bestmoves [[O,B,B],[X,X,O],[X,O,B]] O)]
+   
+   {- testing certain functions...
+   print $ findDepth (gametree [[X,O,X],[X,B,O],[O,X,B]] X)
+   print $ bestmoves [[X,O,X],[X,B,O],[O,X,B]] X
+   print $ gametree [[X,O,X],[X,X,O],[O,X,B]] X
+   print $ gametree [[X,O,X],[X,B,O],[O,X,X]] X
+   print $ length (bestmoves [[O,B,B],[X,X,O],[X,O,B]] O)
+   -}

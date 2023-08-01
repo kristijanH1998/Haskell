@@ -118,7 +118,7 @@ play g p first = do cls
                     goto (1,1)
                     putGrid g
                     --11.4 a)
-                    if first == True then play' g O first else play' g X first
+                    if first == True then play' g p first else play' g (Main.next p) first
 --11.4 a)
 playAux :: Grid -> Player -> Bool -> IO ()
 playAux g p first = do cls

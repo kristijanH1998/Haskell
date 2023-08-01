@@ -108,27 +108,50 @@ cls :: IO ()
 cls = putStr "\ESC[2J"
 main' :: IO ()
 main' = do hSetBuffering stdout NoBuffering
-           play empty O
-play :: Grid -> Player -> IO ()
-play g p = do cls
-              goto (1,1)
-              putGrid g
-              play' g p
-play' :: Grid -> Player -> IO ()
-play' g p
-  | wins O g = putStrLn "Player O wins!\n"
-  | wins X g = putStrLn "Player X wins!\n"
-  | full g   = putStrLn "It's a draw!\n"
-  | p == O   = do i <- getNat (prompt p)
-                  case move g i p of
-                    [] -> do putStrLn "ERROR: Invalid move"
-                             play' g p
-                    [g'] -> play g' (Main.next p)
-  | p == X   = do putStr "Player X is thinking..."
-                  --11.2
-                  let listbestmoves = bestmoves g p
-                  randIndex <- randomRIO (0, length listbestmoves - 1)
-                  (play $! (listbestmoves !! randIndex)) (Main.next p)                  
+           --11.4 a)
+           putStrLn "Do you wish to play as O (first) or X (second)?"
+           answer <- getLine
+           if answer == "O" then play empty O True else if answer == "X" then play empty X False else main'
+           
+play :: Grid -> Player -> Bool -> IO ()
+play g p first = do cls
+                    goto (1,1)
+                    putGrid g
+                    --11.4 a)
+                    if first == True then play' g O first else play' g X first
+--11.4 a)
+playAux :: Grid -> Player -> Bool -> IO ()
+playAux g p first = do cls
+                       goto (1,1)
+                       putGrid g
+                       play' g p first    
+
+play' :: Grid -> Player -> Bool -> IO ()
+play' g p first
+  | wins O g       = putStrLn "Player O wins!\n"
+  | wins X g       = putStrLn "Player X wins!\n"
+  | full g         = putStrLn "It's a draw!\n"
+  --11.4 a)
+  | first == True  = if p == O then do i <- getNat (prompt p)
+                                       case move g i p of
+                                         [] -> do putStrLn "ERROR: Invalid move"
+                                                  play' g p first
+                                         [g'] -> playAux g' (Main.next p) first
+                     else           do putStr "Player X is thinking..."
+                                       --11.2
+                                       let listbestmoves = bestmoves g p
+                                       randIndex <- randomRIO (0, length listbestmoves - 1)
+                                       (playAux $! (listbestmoves !! randIndex)) (Main.next p) first 
+  | first == False = if p == O then do putStr "Player O is thinking..."
+                                       --11.2
+                                       let listbestmoves = bestmoves g p
+                                       randIndex <- randomRIO (0, length listbestmoves - 1)
+                                       (playAux $! (listbestmoves !! randIndex)) (Main.next p) first
+                     else           do i <- getNat (prompt p)
+                                       case move g i p of
+                                        [] -> do putStrLn "ERROR: Invalid move"
+                                                 play' g p first
+                                        [g'] -> playAux g' (Main.next p) first                  
 --11.1
 numOfNodesAux :: Tree Grid -> Int
 numOfNodesAux (Node g childNodes) = if (length childNodes) >= 1 then (length childNodes) + (sum (map numOfNodesAux childNodes))
@@ -170,13 +193,11 @@ getIndexOf elem (x:xs) = case (elemIndex elem (x:xs)) of
                             Just num -> num
                             Nothing -> 0
 
-
 main = do
    print $ showPlayer O
    --testing randomRIO
    number <- randomRIO (0,10) :: IO Int
    putStrLn ("Your random number is: " ++ show number)
-   --main'
    print $ findDepth (gametree empty O)
    --print $ [gametree g O | g <- (bestmoves empty O)]
    print $ foldr1 min (map findDepth [gametree g O | g <- (bestmoves empty O)])
@@ -190,3 +211,5 @@ main = do
    print $ gametree [[X,O,X],[X,B,O],[O,X,X]] X
    print $ length (bestmoves [[O,B,B],[X,X,O],[X,O,B]] O)
    -}
+
+   main'

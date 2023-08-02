@@ -187,14 +187,27 @@ play2' g p
                   let shortestpath = getIndexOf mindepth (map findDepth [gametree g (Main.next p) | g <- listbestmoves])
                   (play2 $! (listbestmoves !! shortestpath)) (Main.next p) 
 
---11.3 function that finds the index of the first element in the list that is equal to the second argument it receives
+--11.3 function that finds the index of the first element in the list that is equal to the argument element it receives
 getIndexOf :: Int -> [Int] -> Int
 getIndexOf elem (x:xs) = case (elemIndex elem (x:xs)) of 
                             Just num -> num
                             Nothing -> 0
+--11.4 b)
+winningLine :: [Player] -> Int -> Player -> Bool
+winningLine [] _ _ = False
+winningLine _ 0 _ = True
+winningLine (pl:pls) marksRem p = if p == pl then
+                                    if consecutives (pl:pls) marksRem p then True else winningLine pls marksRem p
+                                  else winningLine pls marksRem p  
+consecutives :: [Player] -> Int -> Player -> Bool
+consecutives [] _ _ = False
+consecutives _ 0 _ = True
+consecutives (pl:pls) marksRem p = if p == pl then consecutives pls (marksRem-1) p else False
+
 
 main = do
    print $ showPlayer O
+   {-
    --testing randomRIO
    number <- randomRIO (0,10) :: IO Int
    putStrLn ("Your random number is: " ++ show number)
@@ -211,5 +224,7 @@ main = do
    print $ gametree [[X,O,X],[X,B,O],[O,X,X]] X
    print $ length (bestmoves [[O,B,B],[X,X,O],[X,O,B]] O)
    -}
-
-   main'
+   --main'
+   -}
+   print $ winningLine [X,O,X,X,O] 2 O
+   print $ winningLine [X,X,O,O,X] 2 X

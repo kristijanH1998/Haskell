@@ -6,6 +6,9 @@ import Data.List
 import System.IO
 import System.Random
 
+winningLineSize :: Int
+winningLineSize = 3
+
 size :: Int
 size = 3
 type Grid = [[Player]]
@@ -26,9 +29,9 @@ turn g = if os <= xs then O else X
             xs = length (filter (== X) ps)
             ps = concat g
 wins :: Player -> Grid -> Bool
-wins p g = any line (rows ++ cols ++ dias)
-           where
-                line = all (== p)
+           --11.4 b)
+wins p g = any (==True) [winningLine line winningLineSize p | line <- (rows ++ cols ++ dias)] 
+           where 
                 rows = g
                 cols = transpose g
                 dias = [diag g, diag (map reverse g)]
@@ -227,4 +230,7 @@ main = do
    --main'
    -}
    print $ winningLine [X,O,X,X,O] 2 O
-   print $ winningLine [X,X,O,O,X] 2 X
+   print $ winningLine [X,X,O,O,X] 2 O
+   --testing 11.4 b)
+   print $ wins O [[O,X,X],[X,X,O],[O,O,X]]
+   print $ wins O [[O,O,X],[X,X,O],[O,X,X]]

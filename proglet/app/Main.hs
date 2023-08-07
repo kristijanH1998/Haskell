@@ -101,7 +101,8 @@ minimax (Node g ts) alpha beta
                     ts' = mapMinimax ts alpha beta (turn g)
                     ps = [p | Node (_,p) _ <- ts']
 
-mapMinimax (t:ts) alpha beta Player = do let childTree = minimax t alpha beta
+mapMinimax (t:ts) alpha beta player = if newAlpha >= beta then [] else mapMinimax ts newAlpha beta (Main.next player)
+                                      where newAlpha = max alpha (getPlayer (minimax t alpha beta))
                                          
 getPlayer :: Tree (Grid,Player) -> Player
 getPlayer (Node (_,p) _) = p                                    

@@ -88,22 +88,30 @@ prune 0 (Node x _) = Node x []
 prune n (Node x ts) = Node x [prune (n-1) t | t <- ts]
 depth :: Int
 depth = 9
-minimax :: Tree Grid -> Tree (Grid,Player)
-minimax (Node g [])
+--4.11 d)
+minimax :: Tree Grid -> Player -> Player -> Tree (Grid,Player)
+minimax (Node g []) alpha beta 
   | wins O g = Node (g,O) []
   | wins X g = Node (g,X) []
   | otherwise = Node (g,B) []
-minimax (Node g ts)
+minimax (Node g ts) alpha beta
   | turn g == O = Node (g, minimum ps) ts'
   | turn g == X = Node (g, maximum ps) ts'
                   where
-                    ts' = map minimax ts
+                    ts' = mapMinimax ts alpha beta (turn g)
                     ps = [p | Node (_,p) _ <- ts']
+
+mapMinimax (t:ts) alpha beta Player = do let childTree = minimax t alpha beta
+                                         
+getPlayer :: Tree (Grid,Player) -> Player
+getPlayer (Node (_,p) _) = p                                    
+
+
 bestmoves :: Grid -> Player -> [Grid]
 bestmoves g p = [g' | Node (g',p') _ <- ts, p' == best]
                 where
                   tree = prune depth (gametree g p)
-                  Node (_,best) ts = minimax tree
+                  Node (_,best) ts = minimax tree O X
 type Pos = (Int,Int)
 goto :: Pos -> IO ()
 goto (x,y) = putStr ("\ESC[" ++ show y ++ ";" ++ show x ++ "H")

@@ -88,7 +88,7 @@ prune 0 (Node x _) = Node x []
 prune n (Node x ts) = Node x [prune (n-1) t | t <- ts]
 depth :: Int
 depth = 9
---4.11 d)
+--4.11 d) minimax definition for ts' modified and mapMinimax function added to support alpha-beta pruning
 minimax :: Tree Grid -> Player -> Player -> Tree (Grid,Player)
 minimax (Node g []) alpha beta 
   | wins O g = Node (g,O) []
@@ -101,11 +101,13 @@ minimax (Node g ts) alpha beta
                     ts' = mapMinimax ts alpha beta (turn g)
                     ps = [p | Node (_,p) _ <- ts']
 
---mapMinimax :: [Tree Grid] -> Player -> Player -> Player -> [Tree (Grid,Player)]
+mapMinimax :: [Tree Grid] -> Player -> Player -> Player -> [Tree (Grid,Player)]
+mapMinimax [] alpha beta player = []
 mapMinimax (t:ts) alpha beta player = if player == X then
-                                        if (max (getPlayer(newAlpha)) alpha) >= beta then [] else (mapMinimax ts (getPlayer(newAlpha)) beta player)
-                                      else 
-                                        if (min (getPlayer(newBeta)) beta) <= alpha then [] else (mapMinimax ts alpha (getPlayer(newBeta)) player)
+                                        if (max (getPlayer(newAlpha)) alpha) >= beta then [] else ([newAlpha] ++ (mapMinimax ts (getPlayer(newAlpha)) beta player))
+                                      else if player == O then
+                                        if (min (getPlayer(newBeta)) beta) <= alpha then [] else ([newBeta] ++ (mapMinimax ts alpha (getPlayer(newBeta)) player))
+                                      else []
                                       where 
                                         newAlpha = minimax t alpha beta 
                                         newBeta = minimax t alpha beta
@@ -247,4 +249,6 @@ main = do
    --testing 11.4 b)
    print $ wins O [[O,X,X],[X,X,O],[O,O,X]]
    print $ wins O [[O,O,X],[X,X,O],[O,X,X]]
-   main'
+   --main'
+   print $ bestmoves [[B,B,X],[B,B,B],[B,B,B]] O
+   print $ bestmoves [[O,X,X],[O,B,B],[X,B,B]] O

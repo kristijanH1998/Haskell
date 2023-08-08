@@ -223,7 +223,6 @@ consecutives [] _ _ = False
 consecutives _ 0 _ = True
 consecutives (pl:pls) marksRem p = if p == pl then consecutives pls (marksRem-1) p else False
 
-
 main = do
    print $ showPlayer O
    {-

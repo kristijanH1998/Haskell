@@ -102,7 +102,7 @@ minimax (Node g ts) alpha beta
                     ps = [p | Node (_,p) _ <- ts']
 
 mapMinimax :: [Tree Grid] -> Player -> Player -> Player -> [Tree (Grid,Player)]
-mapMinimax [] alpha beta player = []
+mapMinimax [t] alpha beta player = [minimax t alpha beta]
 mapMinimax (t:ts) alpha beta player = if player == X then
                                         if (max (getPlayer(newAlpha)) alpha) >= beta then [newAlpha] else ([newAlpha] ++ (mapMinimax ts (getPlayer(newAlpha)) beta player))
                                       else 

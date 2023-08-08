@@ -104,17 +104,14 @@ minimax (Node g ts) alpha beta
 mapMinimax :: [Tree Grid] -> Player -> Player -> Player -> [Tree (Grid,Player)]
 mapMinimax [] alpha beta player = []
 mapMinimax (t:ts) alpha beta player = if player == X then
-                                        if (max (getPlayer(newAlpha)) alpha) >= beta then [] else ([newAlpha] ++ (mapMinimax ts (getPlayer(newAlpha)) beta player))
-                                      else if player == O then
-                                        if (min (getPlayer(newBeta)) beta) <= alpha then [] else ([newBeta] ++ (mapMinimax ts alpha (getPlayer(newBeta)) player))
-                                      else []
+                                        if (max (getPlayer(newAlpha)) alpha) >= beta then [newAlpha] else ([newAlpha] ++ (mapMinimax ts (getPlayer(newAlpha)) beta player))
+                                      else 
+                                        if (min (getPlayer(newBeta)) beta) <= alpha then [newBeta] else ([newBeta] ++ (mapMinimax ts alpha (getPlayer(newBeta)) player))
                                       where 
                                         newAlpha = minimax t alpha beta 
                                         newBeta = minimax t alpha beta
-
 getPlayer :: Tree (Grid,Player) -> Player
 getPlayer (Node (_,p) _) = p                                    
-
 bestmoves :: Grid -> Player -> [Grid]
 bestmoves g p = [g' | Node (g',p') _ <- ts, p' == best]
                 where
@@ -248,6 +245,6 @@ main = do
    --testing 11.4 b)
    print $ wins O [[O,X,X],[X,X,O],[O,O,X]]
    print $ wins O [[O,O,X],[X,X,O],[O,X,X]]
-   --main'
+   main'
    print $ bestmoves [[B,B,X],[B,B,B],[B,B,B]] O
    print $ bestmoves [[O,X,X],[O,B,B],[X,B,B]] O

@@ -101,12 +101,17 @@ minimax (Node g ts) alpha beta
                     ts' = mapMinimax ts alpha beta (turn g)
                     ps = [p | Node (_,p) _ <- ts']
 
-mapMinimax (t:ts) alpha beta player = if newAlpha >= beta then [] else mapMinimax ts newAlpha beta (Main.next player)
-                                      where newAlpha = max alpha (getPlayer (minimax t alpha beta))
-                                         
+--mapMinimax :: [Tree Grid] -> Player -> Player -> Player -> [Tree (Grid,Player)]
+mapMinimax (t:ts) alpha beta player = if player == X then
+                                        if (max (getPlayer(newAlpha)) alpha) >= beta then [] else (mapMinimax ts (getPlayer(newAlpha)) beta player)
+                                      else 
+                                        if (min (getPlayer(newBeta)) beta) <= alpha then [] else (mapMinimax ts alpha (getPlayer(newBeta)) player)
+                                      where 
+                                        newAlpha = minimax t alpha beta 
+                                        newBeta = minimax t alpha beta
+
 getPlayer :: Tree (Grid,Player) -> Player
 getPlayer (Node (_,p) _) = p                                    
-
 
 bestmoves :: Grid -> Player -> [Grid]
 bestmoves g p = [g' | Node (g',p') _ <- ts, p' == best]
@@ -236,10 +241,10 @@ main = do
    print $ gametree [[X,O,X],[X,B,O],[O,X,X]] X
    print $ length (bestmoves [[O,B,B],[X,X,O],[X,O,B]] O)
    -}
-   --main'
    -}
    print $ winningLine [X,O,X,X,O] 2 O
    print $ winningLine [X,X,O,O,X] 2 O
    --testing 11.4 b)
    print $ wins O [[O,X,X],[X,X,O],[O,O,X]]
    print $ wins O [[O,O,X],[X,X,O],[O,X,X]]
+   main'
